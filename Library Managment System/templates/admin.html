@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+        <a href="{{ url_for('add_book') }}">Add Book</a>
+        <h3>Books</h3>
+        <ul>
+            {% for book in books %}
+            <li>{{ book.title }} by {{ book.author }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

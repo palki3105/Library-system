@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Sign-Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Sign Up</h2>
+        <form id="signup-form" action="{{ url_for('signup') }}" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Listen for the response from the form submission
+            document.getElementById('signup-form').onsubmit = function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '{{ url_for("signup") }}', true);
+                xhr.responseType = 'blob';
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Create a link to download the file
+                        const blob = new Blob([xhr.response], { type: 'text/plain' });
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'reset_code.txt';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        // Redirect to the login page
+                        const redirectUrl = xhr.getResponseHeader('X-Redirect');
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        }
+                    }
+                };
+
+                const formData = new FormData(document.getElementById('signup-form'));
+                xhr.send(formData);
+            };
+        });
+    </script>
+</body>
+</html>
